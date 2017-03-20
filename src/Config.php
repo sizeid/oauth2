@@ -6,7 +6,7 @@ namespace SizeID\OAuth2;
 
 class Config
 {
-	const API_URL = 'http://localhost/sizeid/bundle/business-api/www';
-	const AUTHORIZATION_SERVER_URL = 'http://localhost/sizeid/bundle/web/www/oauth';
+	const API_URL = 'https://api.business.sizeid.com/';
+	const AUTHORIZATION_SERVER_URL = 'https://sizeid.com/oauth';
 	const TOKEN_PATH = 'access-token';
 }
