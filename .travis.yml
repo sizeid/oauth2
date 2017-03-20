@@ -13,5 +13,5 @@ script:
 
 before_script:
   - sudo apt-get install php5-json
-  - phpenv config-add tests/php.ini
+  - phpenv config-add tests/travisPhp.ini
   - composer install
