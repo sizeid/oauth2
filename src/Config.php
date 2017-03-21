@@ -4,6 +4,10 @@
 namespace SizeID\OAuth2;
 
 
+/**
+ * Default config
+ * @package SizeID\OAuth2
+ */
 class Config
 {
 	const API_URL = 'https://api.business.sizeid.com/';

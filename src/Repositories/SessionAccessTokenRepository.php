@@ -7,6 +7,10 @@ use SizeID\OAuth2\Entities\AccessToken;
 use SizeID\OAuth2\Entities\AccessTokenInterface;
 use SizeID\OAuth2\Entities\ClientAccessToken;
 
+/**
+ * AccessTokenRepositoryInterface implementation, that uses session to store tokens.
+ * @package SizeID\OAuth2\Repositories
+ */
 class SessionAccessTokenRepository implements AccessTokenRepositoryInterface
 {
 

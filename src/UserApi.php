@@ -6,15 +6,21 @@ namespace SizeID\OAuth2;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\UriInterface;
 use SizeID\OAuth2\Entities\AccessToken;
+use SizeID\OAuth2\Exceptions\InvalidCSRFTokenException;
 use SizeID\OAuth2\Exceptions\InvalidStateException;
 use SizeID\OAuth2\Exceptions\RedirectException;
 use SizeID\OAuth2\Repositories\AccessTokenRepositoryInterface;
 use SizeID\OAuth2\Repositories\CsrfTokenRepositoryInterface;
 use SizeID\OAuth2\Repositories\SessionAccessTokenRepository;
 use SizeID\OAuth2\Repositories\SessionCsrfTokenRepository;
-use Tracy\Debugger;
 
+/**
+ * Makes authenticated request to user section.
+ * Uses authorization code grant according to {@link https://tools.ietf.org/html/rfc6749#section-4.1}
+ * @package SizeID\OAuth2
+ */
 class UserApi extends Api
 {
 
@@ -61,6 +67,29 @@ class UserApi extends Api
 		}
 	}
 
+
+	/**
+	 * Url for redirection to authorization server. Internally used by UserApi::acquireNewAccessToken()
+	 * @return UriInterface
+	 */
+	public function getAuthorizationUrl()
+	{
+		return $this->authorizationServerUrl->withQuery(
+			http_build_query(
+				[
+					'response_type' => 'code',
+					'client_id' => $this->clientId,
+					'redirect_uri' => $this->redirectUri,
+					'state' => $this->csrfTokenRepository->generateCSRFToken(),
+				]
+			)
+		);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @throws RedirectException - redirect is always needed
+	 */
 	public function acquireNewAccessToken()
 	{
 		throw RedirectException::create(
@@ -70,6 +99,12 @@ class UserApi extends Api
 		);
 	}
 
+	/**
+	 * Complete authorization process and acquire access token.
+	 * @param string|null $code - variable code from query string
+	 * @param string|null $state - variable state from query string
+	 * @throws InvalidStateException - if CSRF token does not match original
+	 */
 	public function completeAuthorization($code = null, $state = null)
 	{
 		if ($code === null && isset($_GET['code'])) {
@@ -79,7 +114,7 @@ class UserApi extends Api
 			$state = $_GET['state'];
 		}
 		if ($this->csrfTokenRepository->loadTokenCSRFToken() !== $state) {
-			throw new InvalidStateException("Invalid CSRF token.");
+			throw new InvalidCSRFTokenException("Invalid CSRF token.");
 		}
 		$response = $this->httpClient->request(
 			'POST',
@@ -97,18 +132,10 @@ class UserApi extends Api
 		$this->saveTokenFromResponse($response);
 	}
 
-	public function getAuthorizationUrl()
-	{
-		return $this->authorizationServerUrl . '/?' . http_build_query(
-				[
-					'response_type' => 'code',
-					'client_id' => $this->clientId,
-					'redirect_uri' => $this->redirectUri,
-					'state' => $this->csrfTokenRepository->generateCSRFToken(),
-				]
-			);
-	}
-
+	/**
+	 * {@inheritdoc}
+	 * @throws RedirectException - if refresh token expires
+	 */
 	public function refreshAccessToken()
 	{
 		try {
@@ -142,6 +169,10 @@ class UserApi extends Api
 		}
 	}
 
+	/**
+	 * @return AccessToken
+	 * @throws InvalidStateException
+	 */
 	protected function getAccessToken()
 	{
 		$accessToken = parent::getAccessToken();
@@ -152,6 +183,9 @@ class UserApi extends Api
 		return $accessToken;
 	}
 
+	/**
+	 * @param Response $response
+	 */
 	private function saveTokenFromResponse(Response $response)
 	{
 		$jsonToken = $this->parseToken($response);

@@ -10,6 +10,11 @@ use SizeID\OAuth2\Entities\ClientInterface;
 use SizeID\OAuth2\Repositories\AccessTokenRepositoryInterface;
 use SizeID\OAuth2\Repositories\SessionAccessTokenRepository;
 
+/**
+ * Makes authenticated request to client section.
+ * Uses client credentials grant according to {@link https://tools.ietf.org/html/rfc6749#section-4.4}
+ * @package SizeID\OAuth2
+ */
 class ClientApi extends Api
 {
 
@@ -35,6 +40,9 @@ class ClientApi extends Api
 		);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function acquireNewAccessToken()
 	{
 		$response = $this->httpClient->request(
@@ -53,6 +61,10 @@ class ClientApi extends Api
 		$this->accessTokenRepository->saveAccessToken($clientAccessToken);
 	}
 
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function refreshAccessToken()
 	{
 		$this->acquireNewAccessToken();

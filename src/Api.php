@@ -7,7 +7,6 @@ namespace SizeID\OAuth2;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
@@ -17,17 +16,23 @@ use SizeID\OAuth2\Entities\AccessToken;
 use SizeID\OAuth2\Exceptions\InvalidStateException;
 use SizeID\OAuth2\Repositories\AccessTokenRepositoryInterface;
 
+/**
+ * Shared functionality for API calls
+ * @package SizeID\OAuth2
+ */
 abstract class Api
 {
 
 	const SIZEID_ERROR_CODE_HEADER = 'SizeID-Error-Code';
 
 	/**
+	 * SizeID for Business client identifier
 	 * @var string
 	 */
 	protected $clientId;
 
 	/**
+	 * SizeId for Business client secret
 	 * @var string
 	 */
 	protected $clientSecret;
@@ -51,6 +56,7 @@ abstract class Api
 	 * @var ClientInterface
 	 */
 	protected $httpClient;
+
 
 	public function __construct(
 		$clientId,
@@ -80,6 +86,8 @@ abstract class Api
 	}
 
 	/**
+	 * Acquire access token a send authenticated request to SizeID Business API. If needed refresh access token.
+	 * Request URI should be relative for example `user/measures`
 	 * @param RequestInterface $request
 	 * @return ResponseInterface
 	 * @throws InvalidStateException
@@ -98,10 +106,28 @@ abstract class Api
 		return $this->createResponse($request);
 	}
 
+	/**
+	 * Acquire new access token. This method is called internally by Api::send(). Use to force token acquirement.
+	 */
 	public abstract function acquireNewAccessToken();
 
+	/**
+	 * Refresh existing access token. This method is called internylly by  Api::send(). Use to force token refreshment.
+	 */
 	public abstract function refreshAccessToken();
 
+	/**
+	 * @return bool
+	 */
+	protected function hasAccessToken()
+	{
+		return $this->accessTokenRepository->hasAccessToken();
+	}
+
+	/**
+	 * @return AccessToken
+	 * @throws InvalidStateException
+	 */
 	protected function getAccessToken()
 	{
 		$accessToken = $this->accessTokenRepository->getAccessToken();
@@ -118,19 +144,19 @@ abstract class Api
 		return $accessToken;
 	}
 
-	protected function hasAccessToken()
-	{
-		return $this->accessTokenRepository->hasAccessToken();
-	}
-
+	/**
+	 * @param Response $response
+	 * @return \stdClass
+	 */
 	protected function parseToken(Response $response)
 	{
 		return \GuzzleHttp\json_decode($response->getBody()->getContents());
 	}
 
 	/**
-	 * @param Request $request
+	 * @param RequestInterface $request
 	 * @return ResponseInterface
+	 * @throws ClientException
 	 */
 	private function createResponse(RequestInterface $request)
 	{
@@ -159,7 +185,7 @@ abstract class Api
 	}
 
 	/**
-	 * @param ApiRequest $apiRequest
+	 * @param RequestInterface $request
 	 * @return RequestInterface
 	 */
 	private function buildRequest(RequestInterface $request)

@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Response;
 use Mockery as m;
 use SizeID\OAuth2\Api;
 use SizeID\OAuth2\Entities\AccessToken;
+use SizeID\OAuth2\Exceptions\InvalidCSRFTokenException;
 use SizeID\OAuth2\Exceptions\InvalidStateException;
 use SizeID\OAuth2\Exceptions\RedirectException;
 use SizeID\OAuth2\Repositories\AccessTokenRepositoryInterface;
@@ -73,8 +74,8 @@ class UserApiTest extends TestCase
 		} catch (RedirectException $ex) {
 			Assert::equal(RedirectException::CODE_MISSING_TOKEN, $ex->getCode());
 			Assert::equal(
-				'authServer/?response_type=code&client_id=clientId&redirect_uri=redirectUri&state=csrfToken',
-				$ex->getRedirectUrl()
+				'authServer?response_type=code&client_id=clientId&redirect_uri=redirectUri&state=csrfToken',
+				(string)$ex->getRedirectUrl()
 			);
 		}
 
@@ -263,7 +264,7 @@ class UserApiTest extends TestCase
 			function () use ($userApi) {
 				$userApi->completeAuthorization();
 			},
-			InvalidStateException::class,
+			InvalidCSRFTokenException::class,
 			'Invalid CSRF token.'
 		);
 

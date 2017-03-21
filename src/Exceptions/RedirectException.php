@@ -4,6 +4,10 @@
 namespace SizeID\OAuth2\Exceptions;
 
 
+/**
+ * Redirect to authorization server is required.
+ * @package SizeID\OAuth2\Exceptions
+ */
 class RedirectException extends \Exception
 {
 	const CODE_MISSING_TOKEN = 1;
