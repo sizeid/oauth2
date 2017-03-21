@@ -15,9 +15,8 @@ composer require sizeid/oauth2
 
 3. Initialize communication objects
 
-- for **client endpoints** calls see [examples/clientApi.php](examples/clientApi.php)
-- for **user endpoints** calls see [examples/userApi.php](examples/userApi.php)
-
+- for **client endpoints** calls see [examples/clientApiGet.php]()
+- for **user endpoints** calls see [examples/userApiGet.php]()
 
 
 ## Examples
@@ -28,7 +27,7 @@ composer create-project sizeid/oauth2
 ```
 2. Get `clientId` and `clientSecret` from your [SizeID for Business account](https://business.sizeid.com). We have FREE tariff.
 
-3. Navigate to examples directory, replace `clientId` and `clientSecret` and run example with webserver.
+3. Navigate to `examples` directory, copy `config.example.php` to `config.php`, change constants `CLIENT_ID` and `CLIENT_SECRET`, run example file with webserver.
 
 
 
