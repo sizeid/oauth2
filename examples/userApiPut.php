@@ -30,10 +30,8 @@ try {
 	);
 	$rawBody = $clientApi->send($request)->getBody()->getContents();
 } catch (RedirectException $ex) {
-	bar($redirectUri);
 	redirect($ex->getRedirectUrl());
 } catch (BadResponseException $ex) {
-	bar($ex);
 	$rawBody = $ex->getResponse()->getBody()->getContents();
 }
 
