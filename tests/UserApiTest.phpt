@@ -4,6 +4,7 @@ namespace SizeID\OAuth2\Tests;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery as m;
 use SizeID\OAuth2\Api;
@@ -67,7 +68,7 @@ class UserApiTest extends TestCase
 		);
 
 		try {
-			$userApi->request('user');
+			$userApi->send(new Request('get', 'user'));
 			Assert::fail(RedirectException::class . ' should be thrown');
 		} catch (RedirectException $ex) {
 			Assert::equal(RedirectException::CODE_MISSING_TOKEN, $ex->getCode());
@@ -105,7 +106,7 @@ class UserApiTest extends TestCase
 
 		Assert::exception(
 			function () use ($userApi) {
-				$userApi->request('user');
+				$userApi->send(new Request('get', 'user'));
 			},
 			InvalidStateException::class
 		);
@@ -119,7 +120,7 @@ class UserApiTest extends TestCase
 			->shouldReceive('send')
 			->andReturn(new Response());
 
-		Assert::type(Response::class, $userApi->request('user'));
+		Assert::type(Response::class, $userApi->send(new Request('get', 'user')));
 	}
 
 

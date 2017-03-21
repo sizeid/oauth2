@@ -9,6 +9,10 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 use SizeID\OAuth2\Entities\AccessToken;
 use SizeID\OAuth2\Exceptions\InvalidStateException;
 use SizeID\OAuth2\Repositories\AccessTokenRepositoryInterface;
@@ -34,12 +38,12 @@ abstract class Api
 	protected $accessTokenRepository;
 
 	/**
-	 * @var string
+	 * @var UriInterface
 	 */
 	protected $authorizationServerUrl;
 
 	/**
-	 * @var string
+	 * @var UriInterface
 	 */
 	protected $apiBaseUrl;
 
@@ -60,35 +64,27 @@ abstract class Api
 		$this->clientId = $clientId;
 		$this->clientSecret = $clientSecret;
 		$this->accessTokenRepository = $accessTokenRepository;
-		$this->authorizationServerUrl = $authorizationServerUrl ? $authorizationServerUrl : Config::AUTHORIZATION_SERVER_URL;
-		$this->apiBaseUrl = $apiBaseUrl ? $apiBaseUrl : Config::API_URL;
 
+		if ($authorizationServerUrl === null) {
+			$authorizationServerUrl = Config::AUTHORIZATION_SERVER_URL;
+		}
+		if ($apiBaseUrl === null) {
+			$apiBaseUrl = Config::API_URL;
+		}
 		if ($httpClient === null) {
-			$this->httpClient = new Client();
+			$httpClient = new Client();
 		}
-		else{
-			$this->httpClient = $httpClient;
-		}
-	}
-
-
-	/**
-	 * @param $endpoint
-	 * @param string $method
-	 * @param array $headers
-	 * @param null $body
-	 * @return ResponseInterface
-	 */
-	public function request($endpoint, $method = ApiRequest::GET, $headers = [], $body = null)
-	{
-		return $this->send(new ApiRequest($endpoint, $method, $headers, $body));
+		$this->authorizationServerUrl = new Uri($authorizationServerUrl);
+		$this->apiBaseUrl = new Uri($apiBaseUrl);
+		$this->httpClient = $httpClient;
 	}
 
 	/**
-	 * @param ApiRequest $apiRequest
+	 * @param RequestInterface $request
 	 * @return ResponseInterface
+	 * @throws InvalidStateException
 	 */
-	public function send(ApiRequest $apiRequest)
+	public function send(RequestInterface $request)
 	{
 		$hasToken = $this->hasAccessToken();
 		if (!is_bool($hasToken)) {
@@ -99,17 +95,12 @@ abstract class Api
 		if (!$this->hasAccessToken()) {
 			$this->acquireNewAccessToken();
 		}
-		return $this->createResponse($apiRequest);
+		return $this->createResponse($request);
 	}
 
 	public abstract function acquireNewAccessToken();
 
 	public abstract function refreshAccessToken();
-
-	protected function hasAccessToken()
-	{
-		return $this->accessTokenRepository->hasAccessToken();
-	}
 
 	protected function getAccessToken()
 	{
@@ -127,6 +118,11 @@ abstract class Api
 		return $accessToken;
 	}
 
+	protected function hasAccessToken()
+	{
+		return $this->accessTokenRepository->hasAccessToken();
+	}
+
 	protected function parseToken(Response $response)
 	{
 		return \GuzzleHttp\json_decode($response->getBody()->getContents());
@@ -136,17 +132,17 @@ abstract class Api
 	 * @param Request $request
 	 * @return ResponseInterface
 	 */
-	private function createResponse(ApiRequest $apiRequest)
+	private function createResponse(RequestInterface $request)
 	{
 		try {
-			return $this->callApi($this->createRequest($apiRequest));
+			return $this->callApi($this->buildRequest($request));
 		} catch (ClientException $ex) {
 			if ($ex->getResponse()->getStatusCode() === 401) {
 				$response = $ex->getResponse();
 				//access is token expired
 				if ($response->getHeaderLine(self::SIZEID_ERROR_CODE_HEADER) == 109) {
 					$this->refreshAccessToken();
-					return $this->callApi($this->createRequest($apiRequest));
+					return $this->callApi($this->buildRequest($request));
 				}
 			}
 			throw $ex;
@@ -154,36 +150,28 @@ abstract class Api
 	}
 
 	/**
-	 * @param Request $request
+	 * @param RequestInterface $request
 	 * @return ResponseInterface
 	 */
-	private function callApi(Request $request)
+	private function callApi(RequestInterface $request)
 	{
 		return $this->httpClient->send($request);
 	}
 
 	/**
 	 * @param ApiRequest $apiRequest
-	 * @return Request
+	 * @return RequestInterface
 	 */
-	private function createRequest(ApiRequest $apiRequest)
+	private function buildRequest(RequestInterface $request)
 	{
-		$this->addAuthorizationHeader($apiRequest);
-		if ($apiRequest->hasBody()) {
-			$apiRequest->setHeader('Content-Type', 'application/json');
-		}
-		return new Request(
-			$apiRequest->getMethod(),
-			$this->apiBaseUrl . '/' . $apiRequest->getEndpoint(),
-			$apiRequest->getHeaders(),
-			$apiRequest->getBody()
-		);
-	}
-
-	private function addAuthorizationHeader(ApiRequest $apiRequest)
-	{
-		$apiRequest->setHeader('Authorization', 'Bearer ' . $this->getAccessToken()->getAccessToken());
-		return $this;
+		$request = $request->withHeader('Authorization', 'Bearer ' . $this->getAccessToken()->getAccessToken());
+		$requestUri = $request->getUri();
+		$baseUri = $this->apiBaseUrl;
+		$combinedUri = $baseUri
+			->withPath($this->apiBaseUrl->getPath() . '/' . $requestUri->getPath())
+			->withQuery($requestUri->getQuery())
+			->withFragment($requestUri->getFragment());
+		return $request->withUri($combinedUri);
 	}
 
 

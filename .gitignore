@@ -5,3 +5,4 @@ tests/output
 examples/temp
 .idea
 composer.lock
+examples/config.php

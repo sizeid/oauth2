@@ -4,6 +4,7 @@ namespace SizeID\OAuth2\Tests;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery as m;
 use SizeID\OAuth2\ClientApi;
@@ -33,7 +34,7 @@ class ApiTest extends TestCase
 
 		Assert::exception(
 			function () use ($clientApi) {
-				$clientApi->request('client');
+				$clientApi->send(new Request('get', 'client'));
 			}
 			,
 			InvalidStateException::class
@@ -61,7 +62,7 @@ class ApiTest extends TestCase
 
 		Assert::exception(
 			function () use ($clientApi) {
-				$clientApi->request('client');
+				$clientApi->send(new Request('get', 'client'));
 			}
 			,
 			InvalidStateException::class
@@ -90,7 +91,7 @@ class ApiTest extends TestCase
 
 		Assert::exception(
 			function () use ($clientApi) {
-				$clientApi->request('client');
+				$clientApi->send(new Request('get', 'client'));
 			}
 			,
 			InvalidStateException::class
@@ -134,7 +135,7 @@ class ApiTest extends TestCase
 
 		Assert::exception(
 			function () use ($clientApi) {
-				$clientApi->request('client');
+				$clientApi->send(new Request('get', 'client'));
 			}
 			,
 			ClientException::class

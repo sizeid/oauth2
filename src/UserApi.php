@@ -29,6 +29,7 @@ class UserApi extends Api
 	 */
 	private $csrfTokenRepository;
 
+
 	public function __construct(
 		$clientId,
 		$clientSecret,

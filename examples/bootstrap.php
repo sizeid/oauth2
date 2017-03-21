@@ -1,6 +1,13 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
+
+$config = __DIR__ . '/config.php';
+if (!is_file($config)) {
+	echo "File config.php is missing. Please copy config.example.php to config.php and set clientId and clientSecret.";
+	die;
+}
+require $config;
 //enable debugger
 \Tracy\Debugger::enable();
 \Tracy\Debugger::$maxDepth = 10;
@@ -26,5 +33,4 @@ function redirect($location)
 {
 	header('Location: ' . $location);
 	die;
-
 }

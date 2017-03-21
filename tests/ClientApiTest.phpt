@@ -4,6 +4,7 @@ namespace SizeID\OAuth2\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery as m;
 use SizeID\OAuth2\Api;
@@ -61,7 +62,7 @@ class ClientApiTest extends TestCase
 		);
 		Assert::type(ClientApi::class, $clientApi);
 
-		$clientApi->request('client');
+		$clientApi->send(new Request('get', 'client'));
 	}
 
 	public function testRefreshToken()
@@ -109,7 +110,8 @@ class ClientApiTest extends TestCase
 			$httpClient
 		);
 		Assert::type(ClientApi::class, $clientApi);
-		Assert::type(Response::class, $clientApi->request('client', 'POST', [], '{}'));
+
+		Assert::type(Response::class, $clientApi->send(new Request('POST', 'client')));
 
 	}
 
