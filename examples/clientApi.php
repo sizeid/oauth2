@@ -9,7 +9,7 @@ use SizeID\OAuth2\ClientApi;
 
 // Initialize communication object.
 // For full list of parameters see UserApi::__construct().
-// All parameters could be replaced with custom implementation.
+// All parameters could be replaced with custom value or implementation.
 $clientApi = new ClientApi(
 	CLIENT_ID,
 	CLIENT_SECRET

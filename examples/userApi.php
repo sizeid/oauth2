@@ -10,7 +10,7 @@ use SizeID\OAuth2\UserApi;
 $redirectUri = getCurrentUrlWithoutParameters();
 
 // For full list of parameters see UserApi::__construct().
-// All parameters can be replaced with custom implementation.
+// All parameters can be replaced with custom value or implementation.
 
 // redirectUri - url for token retrieval, in this case this script url - replace with custom url
 // don't forget to add (whitelist) redirect uri to SizeID for Business account https://business.sizeid.com/integration.settings/#redirect_uri
