@@ -15,8 +15,8 @@ composer require sizeid/oauth2
 
 3. Initialize communication objects
 
-- for **client endpoints** calls see [examples/clientApiGet.php]()
-- for **user endpoints** calls see [examples/userApiGet.php]()
+- for **client endpoints** calls see [examples/clientApi.php](examples/clientApi.php)
+- for **user endpoints** calls see [examples/userApi.php](examples/userApi.php)
 
 
 ## Examples

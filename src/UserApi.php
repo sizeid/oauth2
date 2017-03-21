@@ -4,6 +4,7 @@
 namespace SizeID\OAuth2;
 
 
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\UriInterface;
@@ -43,8 +44,8 @@ class UserApi extends Api
 		AccessTokenRepositoryInterface $accessTokenRepository = null,
 		$authorizationServerUrl = null,
 		$apiBaseUrl = null,
-		$httpClient = null,
-		$csrfTokenRepository = null
+		ClientInterface $httpClient = null,
+		CsrfTokenRepositoryInterface $csrfTokenRepository = null
 	)
 	{
 		if ($accessTokenRepository === null) {

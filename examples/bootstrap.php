@@ -1,5 +1,6 @@
 <?php
 
+//autoload classes, read config, enable debugger, define some basic functions
 require __DIR__ . '/../vendor/autoload.php';
 
 $config = __DIR__ . '/config.php';
