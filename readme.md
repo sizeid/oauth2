@@ -3,7 +3,8 @@
 
 [![Build Status](https://api.travis-ci.org/sizeid/oauth2.svg?branch=master)](https://travis-ci.org/sizeid/oauth2)
 
-Package for simple communication with [SizeID Business API](https://sizeid.com/business). For more information see [documentation](http://oauth2.sizeid.com/).
+Package for simple communication with [SizeID Business API](https://api.business.sizeid.com/). 
+For more information see [sizeid/oauth2 documentation](http://oauth2.sizeid.com/) and [SizeID Business API documentation](https://business.sizeid.com/integration.business-api/).
 
 ## Installation into existing project
 
@@ -11,7 +12,7 @@ Package for simple communication with [SizeID Business API](https://sizeid.com/b
 ```
 composer require sizeid/oauth2
 ```
-2. Get `clientId` and `clientSecret` from your [SizeID for Business account](https://business.sizeid.com). Free tariff available.
+2. Get `clientId` and `clientSecret` from your [SizeID for Business account](https://business.sizeid.com/integration.settings/). Free tariff available.
 
 3. Initialize communication objects
 
@@ -25,7 +26,7 @@ composer require sizeid/oauth2
 ```
 composer create-project sizeid/oauth2
 ```
-2. Get `clientId` and `clientSecret` from your [SizeID for Business account](https://business.sizeid.com). Free tariff available.
+2. Get `clientId` and `clientSecret` from your [SizeID for Business account](https://business.sizeid.com/integration.settings/). Free tariff available.
 
 3. Navigate to `examples` directory, copy `config.example.php` to `config.php`, change constants `CLIENT_ID` and `CLIENT_SECRET`, run example file with webserver.
 
