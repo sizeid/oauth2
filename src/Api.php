@@ -17,7 +17,7 @@ use SizeID\OAuth2\Exceptions\InvalidStateException;
 use SizeID\OAuth2\Repositories\AccessTokenRepositoryInterface;
 
 /**
- * Shared functionality for API calls
+ * Shared functionality of API calls
  * @package SizeID\OAuth2
  */
 abstract class Api
@@ -86,8 +86,8 @@ abstract class Api
 	}
 
 	/**
-	 * Acquire access token a send authenticated request to SizeID Business API. If needed refresh access token.
-	 * Request URI should be relative for example `user/measures`
+	 * Acquire access token a send authenticated request to SizeID Business API. If needed, refresh access token.
+	 * Request URI should be relative for example `user/measures`.
 	 * @param RequestInterface $request
 	 * @return ResponseInterface
 	 * @throws InvalidStateException
@@ -112,7 +112,7 @@ abstract class Api
 	public abstract function acquireNewAccessToken();
 
 	/**
-	 * Refresh existing access token. This method is called internylly by  Api::send(). Use to force token refreshment.
+	 * Refresh existing access token. This method is called internally by  Api::send(). Use to force token renewal.
 	 */
 	public abstract function refreshAccessToken();
 

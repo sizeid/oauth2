@@ -19,7 +19,7 @@ use SizeID\OAuth2\Repositories\SessionCsrfTokenRepository;
 
 /**
  * Makes authenticated request to user section.
- * Uses authorization code grant according to {@link https://tools.ietf.org/html/rfc6749#section-4.1}
+ * Uses authorization code grant according to {@link https://tools.ietf.org/html/rfc6749#section-4.1}.
  * @package SizeID\OAuth2
  */
 class UserApi extends Api
@@ -104,7 +104,7 @@ class UserApi extends Api
 	 * Complete authorization process and acquire access token.
 	 * @param string|null $code - variable code from query string
 	 * @param string|null $state - variable state from query string
-	 * @throws InvalidStateException - if CSRF token does not match original
+	 * @throws InvalidStateException - if CSRF token does not match original token
 	 */
 	public function completeAuthorization($code = null, $state = null)
 	{

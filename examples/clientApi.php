@@ -16,19 +16,19 @@ $clientApi = new ClientApi(
 );
 
 try {
-	//create request to 'client' endpoint with 'get' method
-	//if needed acquire access token with client credentials method
+	// create request to 'client' endpoint using 'get' method
 	$request = new Request('get', 'client');
-	//send request
+	// send request
+	// if needed acquire access token using client credentials method
 	$response = $clientApi->send($request);
-	//get response body
+	// get response body
 	$rawBody = $response->getBody()->getContents();
 } catch (BadResponseException $ex) {
-	//something went wrong - http response code is not 2xx
+	// something went wrong - http response code is not 2xx
 	$rawBody = $ex->getResponse()->getBody()->getContents();
 }
 
-//dump request content
+// dump request content
 dump(json_decode($rawBody, true));
 
 

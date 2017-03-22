@@ -12,7 +12,7 @@ use SizeID\OAuth2\Repositories\SessionAccessTokenRepository;
 
 /**
  * Makes authenticated request to client section.
- * Uses client credentials grant according to {@link https://tools.ietf.org/html/rfc6749#section-4.4}
+ * Uses client credentials grant according to {@link https://tools.ietf.org/html/rfc6749#section-4.4}.
  * @package SizeID\OAuth2
  */
 class ClientApi extends Api

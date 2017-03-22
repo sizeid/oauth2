@@ -5,7 +5,7 @@ namespace SizeID\OAuth2\Repositories;
 
 
 /**
- * CsrfTokenRepositoryInterface implementation, that uses session to store tokens.
+ * CsrfTokenRepositoryInterface implementation - that uses session to store tokens.
  * @package SizeID\OAuth2\Repositories
  */
 class SessionCsrfTokenRepository implements CsrfTokenRepositoryInterface

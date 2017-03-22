@@ -22,7 +22,7 @@ $clientApi = new UserApi(
 
 
 if (isset($_GET['code'])) {
-	// finish authorization process - receive authorization code a call for access token
+	// finish authorization process - receive authorization code and call for access token
 	// code and state default from $_GET['code'] $_GET['state']
 	$clientApi->completeAuthorization();
 	//redirect to this script url
@@ -35,6 +35,7 @@ try {
 	// or create example put request - uncomment next line and comment line above
 	// $request = createExamplePutRequest();
 	// send request
+	// if needed acquire access token using authorization code method
 	$response = $clientApi->send($request);
 	// get response body
 	$rawBody = $response->getBody()->getContents();
@@ -53,7 +54,7 @@ dump(json_decode($rawBody, true));
 
 
 /**
- * create request to endpoint 'user' with method get
+ * create request to endpoint 'user' using 'get' method
  * @return Request
  */
 function createExampleGetRequest()
@@ -62,7 +63,7 @@ function createExampleGetRequest()
 }
 
 /**
- * create request to endpoint 'user/measures' with method put and json body
+ * Create request to endpoint 'user/measures' using 'put' method and JSON attached to the request's body.
  * this call will change user's bodyHeight to 200.
  * @return Request
  */

@@ -11,14 +11,14 @@ namespace SizeID\OAuth2\Repositories;
 interface CsrfTokenRepositoryInterface
 {
 	/**
-	 * Generate save and return CSRF token
-	 * @return string CSRF token
+	 * Generates saves and returns CSRF token.
+	 * @return string - CSRF token
 	 */
 	public function generateCSRFToken();
 
 	/**
-	 * Return token from previous generateCSRFToken function
-	 * @return string CSRF tokne
+	 * Returns token from previous CsrfTokenRepositoryInterface::generateCSRFToken() function call.
+	 * @return string - CSRF toknen
 	 */
 	public function loadTokenCSRFToken();
 }

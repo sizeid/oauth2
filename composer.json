@@ -1,8 +1,14 @@
 {
   "name": "sizeid/oauth2",
-  "author": "Jakub Filla",
-  "description": "Library for communication with SizeID Business API.",
+  "description": "Package for communication with SizeID Business API.",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Jakub Filla",
+      "email": "jakub.filla@wavevision.cz",
+      "role": "Developer"
+    }
+  ],
   "require": {
     "guzzlehttp/guzzle": "^6.2"
   },
