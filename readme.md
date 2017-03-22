@@ -3,7 +3,7 @@
 
 [![Build Status](https://api.travis-ci.org/sizeid/oauth2.svg?branch=master)](https://travis-ci.org/sizeid/oauth2)
 
-Package for simple communication with [SizeID Business API](https://sizeid.com/business).
+Package for simple communication with [SizeID Business API](https://sizeid.com/business). For more information see [documentation](http://oauth2.sizeid.com/).
 
 ## Installation into existing project
 
