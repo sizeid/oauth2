@@ -1,4 +1,4 @@
-# SizeID Businnes API OAuth2
+# SizeID Business API OAuth2
 
 
 [![Build Status](https://api.travis-ci.org/sizeid/oauth2.svg?branch=master)](https://travis-ci.org/sizeid/oauth2)
