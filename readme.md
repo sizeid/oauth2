@@ -18,6 +18,7 @@ composer require sizeid/oauth2
 
 - for **client endpoints** calls see [examples/clientApi.php](examples/clientApi.php)
 - for **user endpoints** calls see [examples/userApi.php](examples/userApi.php)
+- for **login with sizeid** using popup see [examples/popupLogin.php](examples/popupLogin.php)
 
 
 ## Examples
