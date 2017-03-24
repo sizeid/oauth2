@@ -8,7 +8,6 @@
             $(document).on('click', '.popup', function (e) {
                 e.preventDefault();
                 var url = $(this).attr('href');
-                console.log(url);
                 var myWindow = window.open(url, "", "width=600,height=600");
             });
         });

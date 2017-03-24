@@ -45,6 +45,7 @@ try {
 	$request = new Request('get', 'user');
 	// send request
 	$response = $userApi->send($request);
+	// receive user data
 	$user = json_decode($response->getBody()->getContents());
 	// render username to template popupLogin.latte
 	renderTemplate(['user' => $user]);
