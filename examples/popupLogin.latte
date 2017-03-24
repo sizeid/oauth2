@@ -1,0 +1,28 @@
+<html>
+<head>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(document).on('click', '.popup', function (e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                console.log(url);
+                var myWindow = window.open(url, "", "width=600,height=600");
+            });
+        });
+    </script>
+</head>
+<body>
+{ifset $loginUrl}
+    <a class="popup" href="{$loginUrl}">Login with SizeID</a>
+{/ifset}
+
+{ifset $user}
+    <pre>Logged in as {$user->data->name} - clear session to logout</pre>
+{/ifset}
+
+</body>
+
+</html>

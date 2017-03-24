@@ -14,7 +14,7 @@ $redirectUri = getCurrentUrlWithoutParameters();
 
 // redirectUri - url for token retrieval, in this case this script url - replace with custom url
 // don't forget to add (whitelist) redirect uri to SizeID for Business account https://business.sizeid.com/integration.settings/#redirect_uri
-$clientApi = new UserApi(
+$userApi = new UserApi(
 	CLIENT_ID,        //clientId from config.php
 	CLIENT_SECRET,    //clientSecret from config.php
 	$redirectUri
@@ -24,7 +24,7 @@ $clientApi = new UserApi(
 if (isset($_GET['code'])) {
 	// finish authorization process - receive authorization code and call for access token
 	// code and state default from $_GET['code'] $_GET['state']
-	$clientApi->completeAuthorization();
+	$userApi->completeAuthorization();
 	//redirect to this script url
 	redirect($redirectUri);
 }
@@ -36,7 +36,7 @@ try {
 	// $request = createExamplePutRequest();
 	// send request
 	// if needed acquire access token using authorization code method
-	$response = $clientApi->send($request);
+	$response = $userApi->send($request);
 	// get response body
 	$rawBody = $response->getBody()->getContents();
 } catch (RedirectException $ex) {

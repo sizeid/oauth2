@@ -16,7 +16,8 @@
     "nette/robot-loader": "^3.0",
     "tracy/tracy": "^2.4",
     "nette/tester": "^1.7",
-    "mockery/mockery": "^0.9.9"
+    "mockery/mockery": "^0.9.9",
+    "latte/latte": "^2.4"
   },
   "autoload": {
     "psr-4": {
