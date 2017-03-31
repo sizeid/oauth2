@@ -72,7 +72,7 @@ class ApiTest extends TestCase
 	public function testGetInvalidAccessToken()
 	{
 		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
-		$accessToken = new AccessToken(NULL, 60);
+		$accessToken = new AccessToken(NULL);
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn($accessToken);
@@ -102,7 +102,7 @@ class ApiTest extends TestCase
 	public function testClientException()
 	{
 		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
-		$accessToken = new AccessToken("value", 60);
+		$accessToken = new AccessToken("value");
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn($accessToken);

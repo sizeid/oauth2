@@ -103,7 +103,7 @@ class UserApiTest extends TestCase
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->once()
-			->andReturn(new AccessToken('accessToken', 60));
+			->andReturn(new AccessToken('accessToken'));
 
 		Assert::exception(
 			function () use ($userApi) {
@@ -114,7 +114,7 @@ class UserApiTest extends TestCase
 
 		$tokenRepository
 			->shouldReceive('getAccessToken')
-			->andReturn(new AccessToken('accessToken', 60, 'refreshToken'));
+			->andReturn(new AccessToken('accessToken', 'refreshToken'));
 
 
 		$httpClient
@@ -131,7 +131,7 @@ class UserApiTest extends TestCase
 
 		$tokenRepository
 			->shouldReceive('getAccessToken')
-			->andReturn(new AccessToken('acessToken', 60, 'refreshToken'));
+			->andReturn(new AccessToken('acessToken', 'refreshToken'));
 
 		$tokenRepository
 			->shouldReceive('saveAccessToken')
@@ -177,7 +177,7 @@ class UserApiTest extends TestCase
 
 		$tokenRepository
 			->shouldReceive('getAccessToken')
-			->andReturn(new AccessToken('acessToken', 60, 'refreshToken'));
+			->andReturn(new AccessToken('acessToken', 'refreshToken'));
 		$responseException = m::mock(ClientException::class);
 
 		$errorResponse = new Response(

@@ -192,7 +192,7 @@ class UserApi extends Api
 		$jsonToken = $this->parseToken($response);
 		$this->accessTokenRepository->saveAccessToken(
 			new AccessToken(
-				$jsonToken->access_token, $jsonToken->expires_in, $jsonToken->refresh_token
+				$jsonToken->access_token, $jsonToken->refresh_token
 			)
 		);
 	}

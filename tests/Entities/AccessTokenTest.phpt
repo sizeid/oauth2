@@ -12,8 +12,8 @@ class AccessTokenTest extends TestCase
 {
 	public function testConstants()
 	{
-		$accessToken = new AccessToken('accessToken', 60, 'refreshToken');
-		Assert::type(\DateTime::class, $accessToken->getValidTo());
+		$accessToken = new AccessToken('accessToken', 'refreshToken');
+		Assert::type(AccessToken::class, $accessToken);
 	}
 
 }

@@ -38,7 +38,7 @@ class ClientApiTest extends TestCase
 		$tokenRepository
 			->shouldReceive('saveAccessToken');
 
-		$accessToken = new AccessToken('value', 60);
+		$accessToken = new AccessToken('value');
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn($accessToken);
@@ -73,7 +73,7 @@ class ClientApiTest extends TestCase
 			->shouldReceive('hasAccessToken')
 			->andReturn(true);
 
-		$accessToken = new AccessToken('value', 60);
+		$accessToken = new AccessToken('value');
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn($accessToken);

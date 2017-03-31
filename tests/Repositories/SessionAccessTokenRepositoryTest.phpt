@@ -16,7 +16,7 @@ class SessionAccessTokenRepositoryTest extends TestCase
 	{
 		session_abort();
 		$repository = new SessionAccessTokenRepository('n');
-		$token = new AccessToken('ac', 20);
+		$token = new AccessToken('ac');
 		$repository->saveAccessToken($token);
 		Assert::true($repository->hasAccessToken());
 		Assert::type(AccessToken::class, $repository->getAccessToken());

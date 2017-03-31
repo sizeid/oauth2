@@ -57,7 +57,7 @@ class ClientApi extends Api
 			]
 		);
 		$jsonToken = $this->parseToken($response);
-		$clientAccessToken = new AccessToken($jsonToken->access_token, $jsonToken->expires_in);
+		$clientAccessToken = new AccessToken($jsonToken->access_token);
 		$this->accessTokenRepository->saveAccessToken($clientAccessToken);
 	}
 

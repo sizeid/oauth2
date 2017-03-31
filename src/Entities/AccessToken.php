@@ -3,8 +3,6 @@
 
 namespace SizeID\OAuth2\Entities;
 
-use DateTime;
-
 
 /**
  * Wrapper for access token according to {@link https://tools.ietf.org/html/rfc6749#section-4.1.4}
@@ -14,25 +12,19 @@ class AccessToken
 {
 
 	/**
-	 * @var \DateTime
+	 * @var string
 	 */
-	private $validTo;
-
 	private $accessToken;
 
+	/**
+	 * @var string
+	 */
 	private $refreshToken;
 
-	public function __construct($accessToken, $expiresIn, $refreshToken = null)
+	public function __construct($accessToken, $refreshToken = null)
 	{
-		$validTo = new DateTime();
-		$this->validTo = $validTo->modify("+ $expiresIn seconds");
 		$this->accessToken = $accessToken;
 		$this->refreshToken = $refreshToken;
-	}
-
-	public function getValidTo()
-	{
-		return $this->validTo;
 	}
 
 	public function getAccessToken()

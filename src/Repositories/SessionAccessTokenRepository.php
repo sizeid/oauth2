@@ -30,7 +30,7 @@ class SessionAccessTokenRepository implements AccessTokenRepositoryInterface
 
 	public function saveAccessToken(AccessToken $accessToken)
 	{
-		$_SESSION[$this->namespace] = $accessToken;
+		$_SESSION[$this->namespace] = $this->serialize($accessToken);
 	}
 
 	public function hasAccessToken()
@@ -48,8 +48,27 @@ class SessionAccessTokenRepository implements AccessTokenRepositoryInterface
 	 */
 	public function getAccessToken()
 	{
-		return $_SESSION[$this->namespace];
+		return $this->unserialize($_SESSION[$this->namespace]);
 	}
 
+	private function serialize(AccessToken $accessToken)
+	{
+		return serialize(
+			[
+				$accessToken->getAccessToken(),
+				$accessToken->getRefreshToken()
+			]
+		);
+	}
+
+	/**
+	 * @param $serializedToken
+	 * @return AccessToken
+	 */
+	private function unserialize($serializedToken)
+	{
+		list($accessToken, $refreshToken) = unserialize($serializedToken);
+		return new AccessToken($accessToken, $refreshToken);
+	}
 
 }
