@@ -14,7 +14,6 @@ class SessionAccessTokenRepositoryTest extends TestCase
 
 	public function testRepository()
 	{
-		session_abort();
 		$repository = new SessionAccessTokenRepository('n');
 		$token = new AccessToken('ac');
 		$repository->saveAccessToken($token);

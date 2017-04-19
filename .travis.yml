@@ -3,15 +3,18 @@ language: php
 sudo: required
 
 php:
+  - 5.4
+  - 5.5
   - 5.6
+  - 7.0
 
 env:
   - TESTER_PHP_BIN="php-cgi"
 
 script:
-  - ./vendor/bin/tester -p $TESTER_PHP_BIN -s -c ./tests/travisPhp.ini ./tests
+  - ./vendor/bin/tester -p $TESTER_PHP_BIN -s -c ./tests/testPhp.ini ./tests
 
 before_script:
   - sudo apt-get install php5-json
-  - phpenv config-add tests/travisPhp.ini
+  - phpenv config-add tests/testPhp.ini
   - composer install

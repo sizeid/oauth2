@@ -13,7 +13,6 @@ class SessionCsrfRepositoryTest extends TestCase
 
 	public function testRepository()
 	{
-		session_abort();
 		$repository = new SessionCsrfTokenRepository('n');
 		Assert::null($repository->loadTokenCSRFToken());
 		$generatedToken = $repository->generateCSRFToken();

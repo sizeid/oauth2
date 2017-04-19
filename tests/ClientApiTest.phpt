@@ -2,16 +2,12 @@
 
 namespace SizeID\OAuth2\Tests;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Message\Request;
 use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\StreamInterface;
 use Mockery as m;
 use SizeID\OAuth2\Api;
 use SizeID\OAuth2\ClientApi;
 use SizeID\OAuth2\Entities\AccessToken;
-use SizeID\OAuth2\Repositories\SessionAccessTokenRepository;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -26,12 +22,12 @@ class ClientApiTest extends TestCase
 			'clientId',
 			'clientSecret'
 		);
-		Assert::type(ClientApi::class, $clientApi);
+		Assert::type('SizeID\OAuth2\ClientApi', $clientApi);
 	}
 
 	public function testAcquireToken()
 	{
-		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
+		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
 			->andReturn(FALSE);
@@ -41,8 +37,8 @@ class ClientApiTest extends TestCase
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn($accessToken);
-		$httpClient = m::mock(Client::class);
-		$stream = m::mock(StreamInterface::class);
+		$httpClient = m::mock('GuzzleHttp\Client');
+		$stream = m::mock('GuzzleHttp\Stream\StreamInterface');
 		$stream
 			->shouldReceive('getContents')
 			->andReturn('{"access_token":"token", "expires_in": 60}');
@@ -60,13 +56,13 @@ class ClientApiTest extends TestCase
 			NULL,
 			$httpClient
 		);
-		Assert::type(ClientApi::class, $clientApi);
+		Assert::type('SizeID\OAuth2\ClientApi', $clientApi);
 		$clientApi->send(new Request('get', 'client'));
 	}
 
 	public function testRefreshToken()
 	{
-		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
+		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
 			->andReturn(TRUE);
@@ -76,15 +72,15 @@ class ClientApiTest extends TestCase
 			->andReturn($accessToken);
 		$tokenRepository
 			->shouldReceive('saveAccessToken');
-		$httpClient = m::mock(Client::class);
+		$httpClient = m::mock('GuzzleHttp\Client');
 		$response = new Response(401, [Api::SIZEID_ERROR_CODE_HEADER => "109"]);
-		$e = m::mock(ClientException::class);
+		$e = m::mock('GuzzleHttp\Exception\ClientException');
 		$e->shouldReceive('getResponse')
 			->andReturn($response);
 		$httpClient
 			->shouldReceive('post')
 			->once()->andThrow($e);
-		$stream = m::mock(StreamInterface::class);
+		$stream = m::mock('GuzzleHttp\Stream\StreamInterface');
 		$stream
 			->shouldReceive('getContents')
 			->andReturn('{"access_token":"token", "expires_in": 60}');
@@ -103,8 +99,8 @@ class ClientApiTest extends TestCase
 			NULL,
 			$httpClient
 		);
-		Assert::type(ClientApi::class, $clientApi);
-		Assert::type(Response::class, $clientApi->send(new Request('POST', 'client')));
+		Assert::type('SizeID\OAuth2\ClientApi', $clientApi);
+		Assert::type('GuzzleHttp\Message\Response', $clientApi->send(new Request('POST', 'client')));
 	}
 }
 

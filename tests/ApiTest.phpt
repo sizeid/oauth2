@@ -2,15 +2,11 @@
 
 namespace SizeID\OAuth2\Tests;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Message\Request;
 use GuzzleHttp\Message\Response;
 use Mockery as m;
 use SizeID\OAuth2\ClientApi;
 use SizeID\OAuth2\Entities\AccessToken;
-use SizeID\OAuth2\Exceptions\InvalidStateException;
-use SizeID\OAuth2\Repositories\SessionAccessTokenRepository;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -21,7 +17,7 @@ class ApiTest extends TestCase
 
 	public function testHasAccessToken()
 	{
-		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
+		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
 			->andReturn(NULL);
@@ -35,13 +31,13 @@ class ApiTest extends TestCase
 				$clientApi->send(new Request('get', 'client'));
 			}
 			,
-			InvalidStateException::class
+			'SizeID\OAuth2\Exceptions\InvalidStateException'
 		);
 	}
 
 	public function testGetAcessToken()
 	{
-		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
+		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn(new \stdClass());
@@ -60,13 +56,13 @@ class ApiTest extends TestCase
 				$clientApi->send(new Request('get', 'client'));
 			}
 			,
-			InvalidStateException::class
+			'SizeID\OAuth2\Exceptions\InvalidStateException'
 		);
 	}
 
 	public function testGetInvalidAccessToken()
 	{
-		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
+		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
 		$accessToken = new AccessToken(NULL);
 		$tokenRepository
 			->shouldReceive('getAccessToken')
@@ -86,13 +82,13 @@ class ApiTest extends TestCase
 				$clientApi->send(new Request('get', 'client'));
 			}
 			,
-			InvalidStateException::class
+			'SizeID\OAuth2\Exceptions\InvalidStateException'
 		);
 	}
 
 	public function testClientException()
 	{
-		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
+		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
 		$accessToken = new AccessToken("value");
 		$tokenRepository
 			->shouldReceive('getAccessToken')
@@ -102,8 +98,8 @@ class ApiTest extends TestCase
 			->andReturn(TRUE);
 		$tokenRepository
 			->shouldReceive('deleteAccessToken');
-		$httpClient = m::mock(ClientInterface::class);
-		$clientException = m::mock(ClientException::class);
+		$httpClient = m::mock('GuzzleHttp\ClientInterface');
+		$clientException = m::mock('GuzzleHttp\Exception\ClientException');
 		$clientException
 			->shouldReceive('getResponse')
 			->andReturn(new Response(401));
@@ -123,7 +119,7 @@ class ApiTest extends TestCase
 				$clientApi->send(new Request('get', 'client'));
 			}
 			,
-			ClientException::class
+			'GuzzleHttp\Exception\ClientException'
 		);
 	}
 }
