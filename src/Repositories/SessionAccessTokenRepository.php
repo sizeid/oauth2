@@ -2,7 +2,6 @@
 
 namespace SizeID\OAuth2\Repositories;
 
-
 use SizeID\OAuth2\Entities\AccessToken;
 use SizeID\OAuth2\Entities\AccessTokenInterface;
 use SizeID\OAuth2\Entities\ClientAccessToken;
@@ -13,7 +12,6 @@ use SizeID\OAuth2\Entities\ClientAccessToken;
  */
 class SessionAccessTokenRepository implements AccessTokenRepositoryInterface
 {
-
 
 	/**
 	 * @var string
@@ -56,7 +54,7 @@ class SessionAccessTokenRepository implements AccessTokenRepositoryInterface
 		return serialize(
 			[
 				$accessToken->getAccessToken(),
-				$accessToken->getRefreshToken()
+				$accessToken->getRefreshToken(),
 			]
 		);
 	}
@@ -70,5 +68,4 @@ class SessionAccessTokenRepository implements AccessTokenRepositoryInterface
 		list($accessToken, $refreshToken) = unserialize($serializedToken);
 		return new AccessToken($accessToken, $refreshToken);
 	}
-
 }

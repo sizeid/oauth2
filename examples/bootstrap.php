@@ -1,27 +1,20 @@
 <?php
+use Tracy\Debugger;
 
 //autoload classes, read config, enable debugger, define some basic functions
 require __DIR__ . '/../vendor/autoload.php';
-
 $config = __DIR__ . '/config.php';
 if (!is_file($config)) {
 	echo "File config.php is missing. Please copy config.example.php to config.php and set clientId and clientSecret.";
 	die;
 }
 require $config;
-//enable debugger
-\Tracy\Debugger::enable();
-\Tracy\Debugger::$maxDepth = 10;
-//autoload all classes
-$loader = new \Nette\Loaders\RobotLoader();
-$loader
-	->addDirectory(__DIR__ . '/../src')
-	->setTempDirectory(__DIR__ . '/temp')
-	->register();
-
+//enable debugger and force development environment
+Debugger::enable(Debugger::DEVELOPMENT);
+Debugger::$maxDepth = 10;
 function bar($var, $title = NULL, array $options = NULL)
 {
-	\Tracy\Debugger::barDump($var, $title, $options);
+	Debugger::barDump($var, $title, $options);
 }
 
 function getCurrentUrlWithoutParameters()

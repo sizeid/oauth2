@@ -1,17 +1,13 @@
 <?php
-
 require __DIR__ . '/bootstrap.php';
-
 use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Message\Request;
 use SizeID\OAuth2\Exceptions\RedirectException;
 use SizeID\OAuth2\UserApi;
 
 $redirectUri = getCurrentUrlWithoutParameters();
-
 // For full list of parameters see UserApi::__construct().
 // All parameters can be replaced with custom value or implementation.
-
 // redirectUri - url for token retrieval, in this case this script url - replace with custom url
 // don't forget to add (whitelist) redirect uri to SizeID for Business account https://business.sizeid.com/integration.settings/#redirect_uri
 $userApi = new UserApi(
@@ -19,8 +15,6 @@ $userApi = new UserApi(
 	CLIENT_SECRET,    //clientSecret from config.php
 	$redirectUri
 );
-
-
 if (isset($_GET['code'])) {
 	// finish authorization process - receive authorization code and call for access token
 	// code and state default from $_GET['code'] $_GET['state']
@@ -28,7 +22,6 @@ if (isset($_GET['code'])) {
 	//redirect to this script url
 	redirect($redirectUri);
 }
-
 try {
 	// create example get request
 	$request = createExampleGetRequest();
@@ -48,11 +41,8 @@ try {
 	//something went wrong - http response code is not 2xx
 	$rawBody = $ex->getResponse()->getBody()->getContents();
 }
-
 // dump result
-dump(json_decode($rawBody, true));
-
-
+dump(json_decode($rawBody, TRUE));
 /**
  * create request to endpoint 'user' using 'get' method
  * @return Request

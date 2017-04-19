@@ -1,13 +1,11 @@
 <?php
 
-
 namespace SizeID\OAuth2;
-
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\UriInterface;
+use GuzzleHttp\Message\ResponseInterface;
+use GuzzleHttp\Url;
 use SizeID\OAuth2\Entities\AccessToken;
 use SizeID\OAuth2\Exceptions\InvalidCSRFTokenException;
 use SizeID\OAuth2\Exceptions\InvalidStateException;
@@ -25,7 +23,6 @@ use SizeID\OAuth2\Repositories\SessionCsrfTokenRepository;
 class UserApi extends Api
 {
 
-
 	/**
 	 * @var string
 	 */
@@ -36,19 +33,18 @@ class UserApi extends Api
 	 */
 	private $csrfTokenRepository;
 
-
 	public function __construct(
 		$clientId,
 		$clientSecret,
 		$redirectUri,
-		AccessTokenRepositoryInterface $accessTokenRepository = null,
-		$authorizationServerUrl = null,
-		$apiBaseUrl = null,
-		ClientInterface $httpClient = null,
-		CsrfTokenRepositoryInterface $csrfTokenRepository = null
+		AccessTokenRepositoryInterface $accessTokenRepository = NULL,
+		$authorizationServerUrl = NULL,
+		$apiBaseUrl = NULL,
+		ClientInterface $httpClient = NULL,
+		CsrfTokenRepositoryInterface $csrfTokenRepository = NULL
 	)
 	{
-		if ($accessTokenRepository === null) {
+		if ($accessTokenRepository === NULL) {
 			$accessTokenRepository = new SessionAccessTokenRepository('userToken');
 		}
 		parent::__construct(
@@ -60,14 +56,12 @@ class UserApi extends Api
 			$httpClient
 		);
 		$this->redirectUri = $redirectUri;
-
-		if ($csrfTokenRepository === null) {
+		if ($csrfTokenRepository === NULL) {
 			$this->csrfTokenRepository = new SessionCsrfTokenRepository();
 		} else {
 			$this->csrfTokenRepository = $csrfTokenRepository;
 		}
 	}
-
 
 	/**
 	 * Url for redirection to authorization server. Internally used by UserApi::acquireNewAccessToken()
@@ -75,16 +69,16 @@ class UserApi extends Api
 	 */
 	public function getAuthorizationUrl()
 	{
-		return $this->authorizationServerUrl->withQuery(
-			http_build_query(
-				[
-					'response_type' => 'code',
-					'client_id' => $this->clientId,
-					'redirect_uri' => $this->redirectUri,
-					'state' => $this->csrfTokenRepository->generateCSRFToken(),
-				]
-			)
+		$url = Url::fromString($this->authorizationServerUrl);
+		$url->setQuery(
+			[
+				'response_type' => 'code',
+				'client_id' => $this->clientId,
+				'redirect_uri' => $this->redirectUri,
+				'state' => $this->csrfTokenRepository->generateCSRFToken(),
+			]
 		);
+		return $url;
 	}
 
 	/**
@@ -106,28 +100,27 @@ class UserApi extends Api
 	 * @param string|null $state - variable state from query string
 	 * @throws InvalidStateException - if CSRF token does not match original token
 	 */
-	public function completeAuthorization($code = null, $state = null)
+	public function completeAuthorization($code = NULL, $state = NULL)
 	{
-		if ($code === null && isset($_GET['code'])) {
+		if ($code === NULL && isset($_GET['code'])) {
 			$code = $_GET['code'];
 		}
-		if ($state === null && isset($_GET['state'])) {
+		if ($state === NULL && isset($_GET['state'])) {
 			$state = $_GET['state'];
 		}
 		if ($this->csrfTokenRepository->loadTokenCSRFToken() !== $state) {
 			throw new InvalidCSRFTokenException("Invalid CSRF token.");
 		}
-		$response = $this->httpClient->request(
-			'POST',
+		$response = $this->httpClient->post(
 			$this->authorizationServerUrl . '/access-token',
 			[
-				'form_params' => [
+				'body' => [
 					'grant_type' => 'authorization_code',
 					'client_id' => $this->clientId,
 					'client_secret' => $this->clientSecret,
 					'redirect_uri' => $this->redirectUri,
 					'code' => $code,
-				]
+				],
 			]
 		);
 		$this->saveTokenFromResponse($response);
@@ -141,8 +134,7 @@ class UserApi extends Api
 	{
 		try {
 			$refreshToken = $this->accessTokenRepository->getAccessToken()->getRefreshToken();
-			$response = $this->httpClient->request(
-				'POST',
+			$response = $this->httpClient->post(
 				$this->authorizationServerUrl . '/access-token',
 				[
 					'form_params' => [
@@ -151,13 +143,13 @@ class UserApi extends Api
 						'client_id' => $this->clientId,
 						'client_secret' => $this->clientSecret,
 						'redirect_uri' => $this->redirectUri,
-					]
+					],
 				]
 			);
 			$this->saveTokenFromResponse($response);
 		} catch (ClientException $ex) {
 			$response = $ex->getResponse();
-			$sizeIdErrorCode = (int)$response->getHeaderLine(self::SIZEID_ERROR_CODE_HEADER);
+			$sizeIdErrorCode = (int)$response->getHeader(self::SIZEID_ERROR_CODE_HEADER);
 			if ($response->getStatusCode() === 400 && $sizeIdErrorCode === 108) {
 				//refresh token expired
 				throw RedirectException::create(
@@ -185,9 +177,9 @@ class UserApi extends Api
 	}
 
 	/**
-	 * @param Response $response
+	 * @param ResponseInterface $response
 	 */
-	private function saveTokenFromResponse(Response $response)
+	private function saveTokenFromResponse(ResponseInterface $response)
 	{
 		$jsonToken = $this->parseToken($response);
 		$this->accessTokenRepository->saveAccessToken(
@@ -196,6 +188,4 @@ class UserApi extends Api
 			)
 		);
 	}
-
-
 }

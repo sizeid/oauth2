@@ -4,8 +4,8 @@ namespace SizeID\OAuth2\Tests;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Message\Request;
+use GuzzleHttp\Message\Response;
 use Mockery as m;
 use SizeID\OAuth2\ClientApi;
 use SizeID\OAuth2\Entities\AccessToken;
@@ -25,13 +25,11 @@ class ApiTest extends TestCase
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
 			->andReturn(NULL);
-
 		$clientApi = new ClientApi(
 			'clientId',
 			'clientSecret',
 			$tokenRepository
 		);
-
 		Assert::exception(
 			function () use ($clientApi) {
 				$clientApi->send(new Request('get', 'client'));
@@ -49,17 +47,14 @@ class ApiTest extends TestCase
 			->andReturn(new \stdClass());
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
-			->andReturn(true);
-
+			->andReturn(TRUE);
 		$tokenRepository
 			->shouldReceive('deleteAccessToken');
-
 		$clientApi = new ClientApi(
 			'clientId',
 			'clientSecret',
 			$tokenRepository
 		);
-
 		Assert::exception(
 			function () use ($clientApi) {
 				$clientApi->send(new Request('get', 'client'));
@@ -78,17 +73,14 @@ class ApiTest extends TestCase
 			->andReturn($accessToken);
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
-			->andReturn(true);
-
+			->andReturn(TRUE);
 		$tokenRepository
 			->shouldReceive('deleteAccessToken');
-
 		$clientApi = new ClientApi(
 			'clientId',
 			'clientSecret',
 			$tokenRepository
 		);
-
 		Assert::exception(
 			function () use ($clientApi) {
 				$clientApi->send(new Request('get', 'client'));
@@ -97,7 +89,6 @@ class ApiTest extends TestCase
 			InvalidStateException::class
 		);
 	}
-
 
 	public function testClientException()
 	{
@@ -108,31 +99,25 @@ class ApiTest extends TestCase
 			->andReturn($accessToken);
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
-			->andReturn(true);
+			->andReturn(TRUE);
 		$tokenRepository
 			->shouldReceive('deleteAccessToken');
-
 		$httpClient = m::mock(ClientInterface::class);
-
 		$clientException = m::mock(ClientException::class);
-
 		$clientException
 			->shouldReceive('getResponse')
 			->andReturn(new Response(401));
-
 		$httpClient
 			->shouldReceive('send')
 			->andThrow($clientException);
-
 		$clientApi = new ClientApi(
 			'clientId',
 			'clientSecret',
 			$tokenRepository,
-			null,
-			null,
+			NULL,
+			NULL,
 			$httpClient
 		);
-
 		Assert::exception(
 			function () use ($clientApi) {
 				$clientApi->send(new Request('get', 'client'));
@@ -141,8 +126,6 @@ class ApiTest extends TestCase
 			ClientException::class
 		);
 	}
-
-
 }
 
 $test = new ApiTest();

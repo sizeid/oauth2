@@ -1,8 +1,6 @@
 <?php
 
-
 namespace SizeID\OAuth2\Exceptions;
-
 
 /**
  * CSRF token is invalid.
@@ -10,6 +8,5 @@ namespace SizeID\OAuth2\Exceptions;
  */
 class InvalidCSRFTokenException extends \Exception
 {
-
 
 }

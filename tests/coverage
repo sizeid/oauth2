@@ -1,0 +1,8 @@
+#!/bin/bash
+
+dir=`dirname $0`
+
+(
+  cd "$dir/.."
+  vendor/bin/tester tests/ --coverage-src src/ -c tests/coveragePhp.ini --coverage tests/temp/coverage.html
+)

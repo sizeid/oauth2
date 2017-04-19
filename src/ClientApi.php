@@ -1,8 +1,6 @@
 <?php
 
-
 namespace SizeID\OAuth2;
-
 
 use SizeID\OAuth2\Entities\AccessToken;
 use SizeID\OAuth2\Entities\ClientAccessToken;
@@ -21,13 +19,13 @@ class ClientApi extends Api
 	public function __construct(
 		$clientId,
 		$clientSecret,
-		AccessTokenRepositoryInterface $accessTokenRepository = null,
-		$authorizationServerUrl = null,
-		$apiBaseUrl = null,
-		$httpClient = null
+		AccessTokenRepositoryInterface $accessTokenRepository = NULL,
+		$authorizationServerUrl = NULL,
+		$apiBaseUrl = NULL,
+		$httpClient = NULL
 	)
 	{
-		if ($accessTokenRepository === null) {
+		if ($accessTokenRepository === NULL) {
 			$accessTokenRepository = new SessionAccessTokenRepository('clientToken');
 		}
 		parent::__construct(
@@ -45,22 +43,20 @@ class ClientApi extends Api
 	 */
 	public function acquireNewAccessToken()
 	{
-		$response = $this->httpClient->request(
-			'POST',
+		$response = $this->httpClient->post(
 			$this->authorizationServerUrl . '/access-token',
 			[
-				'form_params' => [
+				'body' => [
 					'grant_type' => 'client_credentials',
 					'client_id' => $this->clientId,
 					'client_secret' => $this->clientSecret,
-				]
+				],
 			]
 		);
 		$jsonToken = $this->parseToken($response);
 		$clientAccessToken = new AccessToken($jsonToken->access_token);
 		$this->accessTokenRepository->saveAccessToken($clientAccessToken);
 	}
-
 
 	/**
 	 * {@inheritdoc}
@@ -69,6 +65,4 @@ class ClientApi extends Api
 	{
 		$this->acquireNewAccessToken();
 	}
-
-
 }

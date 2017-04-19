@@ -1,8 +1,6 @@
 <?php
 
-
 namespace SizeID\OAuth2\Repositories;
-
 
 /**
  * CsrfTokenRepositoryInterface implementation - that uses session to store tokens.

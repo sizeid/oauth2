@@ -3,7 +3,7 @@
 require __DIR__ . '/bootstrap.php';
 
 use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Message\Request;
 use SizeID\OAuth2\ClientApi;
 
 

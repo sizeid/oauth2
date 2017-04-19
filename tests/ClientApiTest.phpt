@@ -4,8 +4,9 @@ namespace SizeID\OAuth2\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Message\Request;
+use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\StreamInterface;
 use Mockery as m;
 use SizeID\OAuth2\Api;
 use SizeID\OAuth2\ClientApi;
@@ -33,88 +34,78 @@ class ClientApiTest extends TestCase
 		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
-			->andReturn(false);
-
+			->andReturn(FALSE);
 		$tokenRepository
 			->shouldReceive('saveAccessToken');
-
 		$accessToken = new AccessToken('value');
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn($accessToken);
-
 		$httpClient = m::mock(Client::class);
-		$response = new Response(200, [], '{"access_token":"token", "expires_in": 60}');
+		$stream = m::mock(StreamInterface::class);
+		$stream
+			->shouldReceive('getContents')
+			->andReturn('{"access_token":"token", "expires_in": 60}');
+		$response = new Response(200, [], $stream);
 		$httpClient
-			->shouldReceive('request')
+			->shouldReceive('post')
 			->andReturn($response);
-
 		$httpClient
 			->shouldReceive('send');
-
 		$clientApi = new ClientApi(
 			'clientId',
 			'clientSecret',
 			$tokenRepository,
-			null,
-			null,
+			NULL,
+			NULL,
 			$httpClient
 		);
 		Assert::type(ClientApi::class, $clientApi);
-
 		$clientApi->send(new Request('get', 'client'));
 	}
 
 	public function testRefreshToken()
 	{
-
 		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
-			->andReturn(true);
-
+			->andReturn(TRUE);
 		$accessToken = new AccessToken('value');
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn($accessToken);
-
 		$tokenRepository
 			->shouldReceive('saveAccessToken');
-
 		$httpClient = m::mock(Client::class);
-
 		$response = new Response(401, [Api::SIZEID_ERROR_CODE_HEADER => "109"]);
-
 		$e = m::mock(ClientException::class);
 		$e->shouldReceive('getResponse')
 			->andReturn($response);
 		$httpClient
-			->shouldReceive('send')
+			->shouldReceive('post')
 			->once()->andThrow($e);
-
+		$stream = m::mock(StreamInterface::class);
+		$stream
+			->shouldReceive('getContents')
+			->andReturn('{"access_token":"token", "expires_in": 60}');
+		$response = new Response(200, [], $stream);
+		$httpClient
+			->shouldReceive('post')
+			->once()->andReturn($response);
 		$httpClient
 			->shouldReceive('send')
-			->once()->andReturn(new Response());
-
-		$response = new Response(200, [], '{"access_token":"token", "expires_in": 60}');
-		$httpClient
-			->shouldReceive('request')
-			->andReturn($response);
-
+			->once()->andReturn(new Response(200));
 		$clientApi = new ClientApi(
 			'clientId',
 			'clientSecret',
 			$tokenRepository,
-			null,
-			null,
+			NULL,
+			NULL,
 			$httpClient
 		);
 		Assert::type(ClientApi::class, $clientApi);
-
 		Assert::type(Response::class, $clientApi->send(new Request('POST', 'client')));
-
 	}
-
 }
 
 $test = new ClientApiTest();

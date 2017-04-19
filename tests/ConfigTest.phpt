@@ -16,9 +16,8 @@ class ConfigTest extends TestCase
 		Config::AUTHORIZATION_SERVER_URL;
 		Config::TOKEN_PATH;
 		Config::TOKEN_PATH;
-		Assert::true(true);
+		Assert::true(TRUE);
 	}
-
 }
 
 $test = new ConfigTest();

@@ -4,8 +4,9 @@ namespace SizeID\OAuth2\Tests;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Message\Request;
+use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\StreamInterface;
 use Mockery as m;
 use SizeID\OAuth2\Api;
 use SizeID\OAuth2\Entities\AccessToken;
@@ -35,28 +36,21 @@ class UserApiTest extends TestCase
 
 	public function testAuthorize()
 	{
-
 		$tokenRepository = m::mock(AccessTokenRepositoryInterface::class);
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
 			->once()
-			->andReturn(false);
-
+			->andReturn(FALSE);
 		$tokenRepository
 			->shouldReceive('saveAccessToken');
-
-
 		$stateRepository = m::mock(CsrfTokenRepositoryInterface::class);
 		$stateRepository
 			->shouldReceive('generateCSRFToken')
 			->andReturn('csrfToken');
-
 		$stateRepository
 			->shouldReceive('loadTokenCSRFToken')
 			->andReturn('csrfToken');
-
 		$httpClient = m::mock(ClientInterface::class);
-
 		$userApi = new UserApi(
 			'clientId',
 			'clientSecret',
@@ -67,7 +61,6 @@ class UserApiTest extends TestCase
 			$httpClient,
 			$stateRepository
 		);
-
 		try {
 			$userApi->send(new Request('get', 'user'));
 			Assert::fail(RedirectException::class . ' should be thrown');
@@ -78,83 +71,63 @@ class UserApiTest extends TestCase
 				(string)$ex->getRedirectUrl()
 			);
 		}
-
+		$stream = m::mock(StreamInterface::class);
+		$stream
+			->shouldReceive('getContents')
+			->andReturn('{"access_token":"token", "expires_in": 60, "refresh_token": "refresh_token"}');
 		$httpClient
-			->shouldReceive('request')
+			->shouldReceive('post')
 			->once()
-			->andReturn(
-				new Response(
-					200,
-					[],
-					'{"access_token": "accessToken", "expires_in": 60, "refresh_token": "refreshToken"}'
-				)
-			);
-
+			->andReturn(new Response(200, [], $stream));
 		$userApi->completeAuthorization("authCode", "csrfToken");
-
-
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
-			->andReturn(true);
-
+			->andReturn(TRUE);
 		$tokenRepository
 			->shouldReceive('deleteAccessToken');
-
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->once()
 			->andReturn(new AccessToken('accessToken'));
-
 		Assert::exception(
 			function () use ($userApi) {
 				$userApi->send(new Request('get', 'user'));
 			},
 			InvalidStateException::class
 		);
-
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn(new AccessToken('accessToken', 'refreshToken'));
-
-
 		$httpClient
 			->shouldReceive('send')
-			->andReturn(new Response());
-
+			->andReturn(new Response(200));
 		Assert::type(Response::class, $userApi->send(new Request('get', 'user')));
 	}
-
 
 	public function testRefreshToken()
 	{
 		$tokenRepository = m::mock(AccessTokenRepositoryInterface::class);
-
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn(new AccessToken('acessToken', 'refreshToken'));
-
 		$tokenRepository
 			->shouldReceive('saveAccessToken')
 			->with(
 				m::on(
 					function (AccessToken $accessToken) {
 						Assert::equal('newRefreshToken', $accessToken->getRefreshToken());
-						return true;
+						return TRUE;
 					}
 				)
 			);
-
+		$stream = m::mock(StreamInterface::class);
+		$stream
+			->shouldReceive('getContents')
+			->andReturn('{"access_token":"token", "expires_in": 60, "refresh_token": "newRefreshToken"}');
 		$httpClient = m::mock(ClientInterface::class);
 		$httpClient
-			->shouldReceive('request')
-			->andReturn(
-				new Response(
-					200,
-					[],
-					'{"access_token": "accessToken", "expires_in": 60, "refresh_token": "newRefreshToken"}'
-				)
-			);
-
+			->shouldReceive('post')
+			->andReturn(new Response(200, [], $stream));
 		$userApi = new UserApi(
 			'clientId',
 			'clientSecret',
@@ -163,23 +136,18 @@ class UserApiTest extends TestCase
 			'authServer',
 			'apiUrl',
 			$httpClient,
-			null
+			NULL
 		);
-
 		$userApi->refreshAccessToken();
 	}
-
 
 	public function testInvalidRefreshToken()
 	{
 		$tokenRepository = m::mock(AccessTokenRepositoryInterface::class);
-
-
 		$tokenRepository
 			->shouldReceive('getAccessToken')
 			->andReturn(new AccessToken('acessToken', 'refreshToken'));
 		$responseException = m::mock(ClientException::class);
-
 		$errorResponse = new Response(
 			400,
 			[Api::SIZEID_ERROR_CODE_HEADER => "108"]
@@ -189,10 +157,9 @@ class UserApiTest extends TestCase
 			->andReturn($errorResponse);
 		$httpClient = m::mock(ClientInterface::class);
 		$httpClient
-			->shouldReceive('request')
+			->shouldReceive('post')
 			->once()
 			->andThrow($responseException);
-
 		$userApi = new UserApi(
 			'clientId',
 			'clientSecret',
@@ -201,7 +168,7 @@ class UserApiTest extends TestCase
 			'authServer',
 			'apiUrl',
 			$httpClient,
-			null
+			NULL
 		);
 		Assert::exception(
 			function () use ($userApi) {
@@ -209,24 +176,20 @@ class UserApiTest extends TestCase
 			}
 			,
 			RedirectException::class,
-			null,
+			NULL,
 			RedirectException::CODE_EXPIRED_REFRESH_TOKEN
 		);
-
 		$responseException = m::mock(ClientException::class);
-
 		$errorResponse = new Response(
 			400
 		);
 		$responseException
 			->shouldReceive('getResponse')
 			->andReturn($errorResponse);
-
 		$httpClient
-			->shouldReceive('request')
+			->shouldReceive('post')
 			->once()
 			->andThrow($responseException);
-
 		Assert::exception(
 			function () use ($userApi) {
 				$userApi->refreshAccessToken();
@@ -234,32 +197,26 @@ class UserApiTest extends TestCase
 			,
 			ClientException::class
 		);
-
 	}
 
 	public function testCompleteAuthorizationWithDefault()
 	{
-
 		$_GET['code'] = 'code';
 		$_GET['state'] = 'state1';
-
 		$csrfTokenRepository = m::mock(CsrfTokenRepositoryInterface::class);
-
 		$csrfTokenRepository
 			->shouldReceive('loadTokenCSRFToken')
 			->andReturn('state2');
-
 		$userApi = new UserApi(
 			'clientId',
 			'clientSecret',
 			'redirectUri',
-			null,
+			NULL,
 			'authServer',
 			'apiUrl',
-			null,
-			null
+			NULL,
+			NULL
 		);
-
 		Assert::exception(
 			function () use ($userApi) {
 				$userApi->completeAuthorization();
@@ -267,11 +224,7 @@ class UserApiTest extends TestCase
 			InvalidCSRFTokenException::class,
 			'Invalid CSRF token.'
 		);
-
-
 	}
-
-
 }
 
 $test = new UserApiTest();

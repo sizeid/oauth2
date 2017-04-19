@@ -1,8 +1,6 @@
 <?php
 
-
 namespace SizeID\OAuth2\Repositories;
-
 
 /**
  * Interface CsrfTokenRepositoryInterface
@@ -10,6 +8,7 @@ namespace SizeID\OAuth2\Repositories;
  */
 interface CsrfTokenRepositoryInterface
 {
+
 	/**
 	 * Generates saves and returns CSRF token.
 	 * @return string - CSRF token

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace SizeID\OAuth2\Entities;
-
 
 /**
  * Wrapper for access token according to {@link https://tools.ietf.org/html/rfc6749#section-4.1.4}
@@ -21,7 +19,7 @@ class AccessToken
 	 */
 	private $refreshToken;
 
-	public function __construct($accessToken, $refreshToken = null)
+	public function __construct($accessToken, $refreshToken = NULL)
 	{
 		$this->accessToken = $accessToken;
 		$this->refreshToken = $refreshToken;
@@ -36,6 +34,4 @@ class AccessToken
 	{
 		return $this->refreshToken;
 	}
-
-
 }

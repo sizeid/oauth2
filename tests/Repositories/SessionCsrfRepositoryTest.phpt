@@ -19,7 +19,6 @@ class SessionCsrfRepositoryTest extends TestCase
 		$generatedToken = $repository->generateCSRFToken();
 		Assert::equal($generatedToken, $repository->loadTokenCSRFToken());
 	}
-
 }
 
 $test = new SessionCsrfRepositoryTest();

@@ -10,12 +10,12 @@ require __DIR__ . '/../bootstrap.php';
 
 class AccessTokenTest extends TestCase
 {
+
 	public function testConstants()
 	{
 		$accessToken = new AccessToken('accessToken', 'refreshToken');
-		Assert::type(AccessToken::class, $accessToken);
+		Assert::type(get_class($accessToken), $accessToken);
 	}
-
 }
 
 $test = new AccessTokenTest();
