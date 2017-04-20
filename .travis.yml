@@ -7,11 +7,18 @@ php:
   - 5.5
   - 5.6
 
-env:
-  - PHP_BIN="php-cgi"
+env: TEST_PARAMS='-c tests/php.ini'
+
+matrix:
+  include:
+    - php: 7.0
+      env:
+        - REPORT_COVERAGE=on
+        - TEST_PARAMS='-c tests/php.ini  --coverage coverage.xml --coverage-src src'
 
 script:
-  - vendor/bin/tester tests -p $PHP_BIN -s -c tests/php.ini  --coverage coverage.xml --coverage-src src
+  - vendor/bin/tester tests -p php-cgi -s $TEST_PARAMS
+
 
 before_script:
   - sudo apt-get install php5-json
@@ -19,4 +26,7 @@ before_script:
   - composer install
 
 after_script:
- - wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar && php coveralls.phar --verbose --config tests/.coveralls.yml
+ - >
+   if [ "$COVERAGE" == "on" ]; then
+      wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar && php coveralls.phar --verbose --config tests/.coveralls.yml
+   fi
