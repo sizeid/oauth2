@@ -12,7 +12,7 @@ env:
   - TESTER_PHP_BIN="php-cgi"
 
 script:
-  - vendor/bin/tester tests -p $TESTER_PHP_BIN -s -c tests/php.ini  --coverage coverage.xml --coverage-src src
+  - vendor/bin/tester tests -p phpdbg -s -c tests/php.ini  --coverage coverage.xml --coverage-src src
 
 before_script:
   - sudo apt-get install php5-json
