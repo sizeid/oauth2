@@ -1,8 +1,8 @@
 # SizeID Business API OAuth2
 
-
 [![Build Status](https://api.travis-ci.org/sizeid/oauth2.svg?branch=master)](https://travis-ci.org/sizeid/oauth2)
 [![Coverage Status](https://coveralls.io/repos/github/sizeid/oauth2/badge.svg?branch=php5.4)](https://coveralls.io/github/sizeid/oauth2?branch=php5.4)
+
 Package for simple communication with [SizeID Business API](https://api.business.sizeid.com/). 
 For more information see [sizeid/oauth2 documentation](http://oauth2.sizeid.com/) and [SizeID Business API documentation](https://business.sizeid.com/integration.business-api/).
 
