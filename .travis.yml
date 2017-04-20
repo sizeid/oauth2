@@ -14,7 +14,7 @@ matrix:
     - php: 7.0
       env:
         - REPORT_COVERAGE=on
-        - TEST_PARAMS='-c tests/php.ini  --coverage coverage.xml --coverage-src src'
+        - TEST_PARAMS='-c tests/coveragePhp.ini  --coverage coverage.xml --coverage-src src'
 
 script:
   - vendor/bin/tester tests -p php-cgi -s $TEST_PARAMS
@@ -27,6 +27,6 @@ before_script:
 
 after_script:
  - >
-   if [ "$COVERAGE" == "on" ]; then
+   if [ "$REPORT_COVERAGE" == "on" ]; then
       wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar && php coveralls.phar --verbose --config tests/.coveralls.yml
    fi
