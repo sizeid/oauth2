@@ -153,19 +153,12 @@ abstract class Api
 	 */
 	private function createResponse(RequestInterface $request)
 	{
-		try {
+		$response = $this->callApi($this->buildRequest($request));
+		if ($response->getStatusCode() === 401 && $response->getHeader(self::SIZEID_ERROR_CODE_HEADER) == 109) {
+			$this->refreshAccessToken();
 			return $this->callApi($this->buildRequest($request));
-		} catch (ClientException $ex) {
-			if ($ex->getResponse()->getStatusCode() === 401) {
-				$response = $ex->getResponse();
-				//access is token expired
-				if ($response->getHeader(self::SIZEID_ERROR_CODE_HEADER) == 109) {
-					$this->refreshAccessToken();
-					return $this->callApi($this->buildRequest($request));
-				}
-			}
-			throw $ex;
 		}
+		return $response;
 	}
 
 	/**
@@ -183,6 +176,7 @@ abstract class Api
 	 */
 	private function buildRequest(RequestInterface $request)
 	{
+		$request = clone $request;
 		$request->addHeader('Authorization', 'Bearer ' . $this->getAccessToken()->getAccessToken());
 		$request->setUrl($this->apiBaseUrl . '/' . $request->getUrl());
 		return $request;

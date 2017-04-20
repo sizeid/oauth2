@@ -47,7 +47,8 @@ class ClientApiTest extends TestCase
 			->shouldReceive('post')
 			->andReturn($response);
 		$httpClient
-			->shouldReceive('send');
+			->shouldReceive('send')
+			->andReturn(new Response(200));
 		$clientApi = new ClientApi(
 			'clientId',
 			'clientSecret',
@@ -74,12 +75,9 @@ class ClientApiTest extends TestCase
 			->shouldReceive('saveAccessToken');
 		$httpClient = m::mock('GuzzleHttp\Client');
 		$response = new Response(401, [Api::SIZEID_ERROR_CODE_HEADER => "109"]);
-		$e = m::mock('GuzzleHttp\Exception\ClientException');
-		$e->shouldReceive('getResponse')
-			->andReturn($response);
 		$httpClient
 			->shouldReceive('send')
-			->once()->andThrow($e);
+			->andReturn($response);
 		$stream = m::mock('GuzzleHttp\Stream\StreamInterface');
 		$stream
 			->shouldReceive('getContents')

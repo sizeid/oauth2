@@ -137,7 +137,7 @@ class UserApi extends Api
 			$response = $this->httpClient->post(
 				$this->authorizationServerUrl . '/access-token',
 				[
-					'form_params' => [
+					'body' => [
 						'grant_type' => 'refresh_token',
 						'refresh_token' => $refreshToken,
 						'client_id' => $this->clientId,
