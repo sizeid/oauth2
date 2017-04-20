@@ -78,7 +78,7 @@ class ClientApiTest extends TestCase
 		$e->shouldReceive('getResponse')
 			->andReturn($response);
 		$httpClient
-			->shouldReceive('post')
+			->shouldReceive('send')
 			->once()->andThrow($e);
 		$stream = m::mock('GuzzleHttp\Stream\StreamInterface');
 		$stream
