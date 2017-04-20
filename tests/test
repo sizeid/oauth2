@@ -4,5 +4,5 @@ dir=`dirname $0`
 
 (
   cd "$dir/.."
-  vendor/bin/tester tests/ -c tests/testPhp.ini
+  vendor/bin/tester tests/ -c tests/php.ini
 )

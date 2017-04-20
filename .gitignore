@@ -6,3 +6,5 @@ examples/temp
 .idea
 composer.lock
 examples/config.php
+coverage.html
+coverage.xml
