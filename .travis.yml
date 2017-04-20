@@ -9,14 +9,14 @@ php:
   - 7.0
 
 env:
-  - TESTER_PHP_BIN="php-cgi"
+  - PHP_BIN="php-cgi"
 
 script:
-  - vendor/bin/tester tests -p phpdbg -s -c tests/php.ini  --coverage coverage.xml --coverage-src src
+  - vendor/bin/tester tests -p $PHP_BIN -s -c tests/php.ini  --coverage coverage.xml --coverage-src src
 
 before_script:
   - sudo apt-get install php5-json
-  - phpenv config-add tests/testPhp.ini
+  - phpenv config-add tests/test.ini
   - composer install
 
 after_script:
