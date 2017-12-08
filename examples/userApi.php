@@ -28,7 +28,7 @@ try {
 	// or create example put request - uncomment next line and comment line above
 	// $request = createExamplePutRequest();
 	// send request
-	// if needed acquire access token using authorization code method
+	// if needed, acquire access token using authorization code method
 	$response = $userApi->send($request);
 	// get response body
 	$rawBody = $response->getBody()->getContents();
