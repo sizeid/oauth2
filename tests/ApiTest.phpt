@@ -2,8 +2,8 @@
 
 namespace SizeID\OAuth2\Tests;
 
-use GuzzleHttp\Message\Request;
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Mockery as m;
 use SizeID\OAuth2\ClientApi;
 use SizeID\OAuth2\Entities\AccessToken;

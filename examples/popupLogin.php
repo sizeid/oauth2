@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/bootstrap.php';
-use GuzzleHttp\Message\Request;
+use GuzzleHttp\Psr7\Request;
 use Latte\Engine;
 use SizeID\OAuth2\Exceptions\RedirectException;
 use SizeID\OAuth2\Repositories\SessionAccessTokenRepository;

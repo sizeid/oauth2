@@ -2,12 +2,14 @@
 
 namespace SizeID\OAuth2\Tests;
 
-use GuzzleHttp\Message\Request;
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Mockery as m;
+use Psr\Http\Message\StreamInterface;
 use SizeID\OAuth2\Api;
 use SizeID\OAuth2\ClientApi;
 use SizeID\OAuth2\Entities\AccessToken;
+use SizeID\OAuth2\Repositories\SessionAccessTokenRepository;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -27,7 +29,7 @@ class ClientApiTest extends TestCase
 
 	public function testAcquireToken()
 	{
-		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
+		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
 			->andReturn(FALSE);
@@ -38,7 +40,7 @@ class ClientApiTest extends TestCase
 			->shouldReceive('getAccessToken')
 			->andReturn($accessToken);
 		$httpClient = m::mock('GuzzleHttp\Client');
-		$stream = m::mock('GuzzleHttp\Stream\StreamInterface');
+		$stream = m::mock(StreamInterface::class);
 		$stream
 			->shouldReceive('getContents')
 			->andReturn('{"access_token":"token", "expires_in": 60}');
@@ -57,13 +59,13 @@ class ClientApiTest extends TestCase
 			NULL,
 			$httpClient
 		);
-		Assert::type('SizeID\OAuth2\ClientApi', $clientApi);
+		Assert::type(ClientApi::class, $clientApi);
 		$clientApi->send(new Request('get', 'client'));
 	}
 
 	public function testRefreshToken()
 	{
-		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
+		$tokenRepository = m::mock(SessionAccessTokenRepository::class);
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
 			->andReturn(TRUE);
@@ -78,7 +80,7 @@ class ClientApiTest extends TestCase
 		$httpClient
 			->shouldReceive('send')
 			->andReturn($response);
-		$stream = m::mock('GuzzleHttp\Stream\StreamInterface');
+		$stream = m::mock(StreamInterface::class);
 		$stream
 			->shouldReceive('getContents')
 			->andReturn('{"access_token":"token", "expires_in": 60}');
@@ -97,8 +99,8 @@ class ClientApiTest extends TestCase
 			NULL,
 			$httpClient
 		);
-		Assert::type('SizeID\OAuth2\ClientApi', $clientApi);
-		Assert::type('GuzzleHttp\Message\Response', $clientApi->send(new Request('POST', 'client')));
+		Assert::type(ClientApi::class, $clientApi);
+		Assert::type(Response::class, $clientApi->send(new Request('POST', 'client')));
 	}
 }
 

@@ -4,8 +4,9 @@ namespace SizeID\OAuth2;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Message\ResponseInterface;
-use GuzzleHttp\Url;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
 use SizeID\OAuth2\Entities\AccessToken;
 use SizeID\OAuth2\Exceptions\InvalidCSRFTokenException;
 use SizeID\OAuth2\Exceptions\InvalidStateException;
@@ -69,16 +70,13 @@ class UserApi extends Api
 	 */
 	public function getAuthorizationUrl()
 	{
-		$url = Url::fromString($this->authorizationServerUrl);
-		$url->setQuery(
-			[
-				'response_type' => 'code',
-				'client_id' => $this->clientId,
-				'redirect_uri' => $this->redirectUri,
-				'state' => $this->csrfTokenRepository->generateCSRFToken(),
-			]
-		);
-		return $url;
+		$url = new Uri($this->authorizationServerUrl);
+		return Uri::withQueryValues($url, [
+			'response_type' => 'code',
+			'client_id' => $this->clientId,
+			'redirect_uri' => $this->redirectUri,
+			'state' => $this->csrfTokenRepository->generateCSRFToken(),
+		]);
 	}
 
 	/**
@@ -149,7 +147,7 @@ class UserApi extends Api
 			$this->saveTokenFromResponse($response);
 		} catch (ClientException $ex) {
 			$response = $ex->getResponse();
-			$sizeIdErrorCode = (int)$response->getHeader(self::SIZEID_ERROR_CODE_HEADER);
+			$sizeIdErrorCode = (int)$response->getHeaderLine(self::SIZEID_ERROR_CODE_HEADER);
 			if ($response->getStatusCode() === 400 && $sizeIdErrorCode === 108) {
 				//refresh token expired
 				throw RedirectException::create(
