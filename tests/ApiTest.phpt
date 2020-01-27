@@ -20,7 +20,7 @@ class ApiTest extends TestCase
 		$tokenRepository = m::mock('SizeID\OAuth2\Repositories\SessionAccessTokenRepository');
 		$tokenRepository
 			->shouldReceive('hasAccessToken')
-			->andReturn(NULL);
+			->andReturn(null);
 		$clientApi = new ClientApi(
 			'clientId',
 			'clientSecret',

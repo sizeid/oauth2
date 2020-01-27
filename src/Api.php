@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use SizeID\OAuth2\Entities\AccessToken;
 use SizeID\OAuth2\Exceptions\InvalidStateException;
 use SizeID\OAuth2\Repositories\AccessTokenRepositoryInterface;
+use GuzzleHttp\RequestOptions;
 
 /**
  * Shared functionality of API calls
@@ -60,19 +61,22 @@ abstract class Api
 		$authorizationServerUrl,
 		$apiBaseUrl,
 		$httpClient
-	)
-	{
+	) {
 		$this->clientId = $clientId;
 		$this->clientSecret = $clientSecret;
 		$this->accessTokenRepository = $accessTokenRepository;
-		if ($authorizationServerUrl === NULL) {
+		if ($authorizationServerUrl === null) {
 			$authorizationServerUrl = Config::AUTHORIZATION_SERVER_URL;
 		}
-		if ($apiBaseUrl === NULL) {
+		if ($apiBaseUrl === null) {
 			$apiBaseUrl = Config::API_URL;
 		}
-		if ($httpClient === NULL) {
-			$httpClient = new Client();
+		if ($httpClient === null) {
+			$httpClient = new Client(
+				[
+					RequestOptions::HTTP_ERRORS => false,
+				]
+			);
 		}
 		$this->authorizationServerUrl = $authorizationServerUrl;
 		$this->apiBaseUrl = $apiBaseUrl;
